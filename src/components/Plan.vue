@@ -2,8 +2,9 @@
   <div style="margin:10px 10px 0 10px; " class="clearfix">
     <div style="width:200px; background: #fff;border-radius: 2px;min-height: 700px; position: absolute;">
       <ul class="ul-list  clearfix">
-        <li v-for="(item,index) in tab" @click="tabClick(index)"
-            v-bind:class="[item.active ? 'li-list pull-left active' : 'li-list pull-left']">{{item.name}}
+        <li v-for="(item,index) in tab" @click="tabClick(index)" class="li-list pull-left"
+           :class="{'active':item.active }">{{item.name}}
+
         </li>
       </ul>
       <div class="tree-box">
@@ -17,12 +18,12 @@
           <el-button type="primary" size="small">新增</el-button>
         </div>
         <div class="pull-left mr15">
-          <el-select size="small" placeholder="轮巡状态" v-model="value">
+          <el-select size="small" placeholder="轮巡状态" v-model="value" :multiple="true">
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
+              :value="item.value" >
             </el-option>
 
           </el-select>
@@ -56,6 +57,27 @@
             </el-table-column>
           </slot>
 
+          <el-table-column
+            fixed="right"
+            label="内存使用率"
+          >
+            <template slot-scope="scope">
+              <el-progress :text-inside="true" :stroke-width="16" :percentage="scope.row.ExecuteProgress" status="exception"></el-progress>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            fixed="right"
+            label="操作">
+            <template slot-scope="scope">
+              <el-button
+                @click.native.prevent="deleteRow(scope.$index, tableData4)"
+                type="text"
+                size="small">
+                移除
+              </el-button>
+            </template>
+          </el-table-column>
 
         </el-table>
         <div class="clearfix" style=" border:1px  solid #dedede;    background: #efefef;padding:5px;">
@@ -82,7 +104,10 @@
     data(){
       return {
         tableData: [],
-        options: [{value: '', label: '全部'},{value: 0, label: '未开始'}, {value: 1, label: '执行中'}, {value: 2, label: '已过期'}],
+        options: [{value: '', label: '全部'}, {value: 0, label: '未开始'}, {value: 1, label: '执行中'}, {
+          value: 2,
+          label: '已过期'
+        }],
         colunms: [
           {
             name: '巡检计划名称',
@@ -96,6 +121,7 @@
             name: '设备数量',
             field: 'GroupObjIDS'
           }
+
         ],
         value: '',
         count: 0,
@@ -204,12 +230,10 @@
   }
 </script>
 
-<style lan="less" scoped>
+<style lang="less" scoped>
 
   .page-content {
     margin-left: 200px;
-
-  }
 
   .page-title {
     height: 50px;
@@ -221,33 +245,34 @@
     color: #606266;
   }
 
+  }
+
   .ul-list {
 
-  }
+    .li-list {
+      width: 50%;
+      height: 40px;
+      line-height: 40px;
+      padding: 0 0 0 10px;
+      list-style: none;
+      box-sizing: border-box;
+      color: #606266;
+      background: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+      border-bottom: 1px solid #dedede;
 
-  .li-list {
-    width: 50%;
-    height: 40px;
-    line-height: 40px;
-    padding: 0 0 0 10px;
-    list-style: none;
-    box-sizing: border-box;
-    color: #606266;
-    background: #fff;
-    cursor: pointer;
-    border-radius: 2px;
-    border-bottom: 1px solid #dedede;
+      &:first-child {
+        border-right: 1px solid #409eff
+      }
+      &.active {
+        background: #409eff;
+        color: #fff;
+        border-bottom-color: #409eff;
 
-  }
+      }
 
-  .li-list:first-child {
-    border-right: 1px solid #409eff
-  }
-
-  .li-list.active {
-    background: #409eff;
-    color: #fff;
-    border-bottom-color: #409eff;
+    }
 
   }
 
